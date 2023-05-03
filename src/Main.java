@@ -21,6 +21,7 @@ public class Main {
             System.out.println("1 - Establecer conexion con el SGBD");
             System.out.println("2 - Crear la BD ut14");
             System.out.println("3 - Crear la tabla paciente");
+            System.out.println("4 - Eliminar Base De Datos");
             System.out.println(" ");
             System.out.println("Introzca una opcion por favor");
             System.out.println("------------------------------------------");
