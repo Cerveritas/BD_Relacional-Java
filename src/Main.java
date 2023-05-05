@@ -1,14 +1,16 @@
-import javax.swing.plaf.nimbus.State;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 
 public class Main {
 
     static String query;
-    static Statement st;
-    static Connection conn;
-   static Scanner sc = new Scanner(System.in);
+    public static Statement st;
+    public static Connection conn;
+    public static Scanner sc = new Scanner(System.in);
+    public static Paciente p = null;
+    public static ArrayList<Paciente> listado_pacientes = new ArrayList<>();
     public static void main(String[] args) throws SQLException {
 
         int opcion = 0;
@@ -27,6 +29,8 @@ public class Main {
             System.out.println("8 - Vaciar tabla");
             System.out.println("9 - Actualizar el numero de operaciones");
             System.out.println("10 - Consultar datos");
+            System.out.println("11 - Insertar en BBDD a partir de una clase");
+            System.out.println("12 - Almacenar los registros de la BBDD en un arrayList");
             System.out.println(" ");
             System.out.println("Introzca una opcion por favor");
             System.out.println("------------------------------------------");
@@ -79,8 +83,17 @@ public class Main {
                     consultarDatos();
                     break;
 
+                case 11:
+                    p = construirObjeto();
+                    insertarObjeto(p);
+                    break;
+
+                case 12:
+                    insertarArray();
+                    break;
+
                 default:
-                    System.out.println("El numero introducido es incorrecto");
+                    System.out.println("El numero introducido es incorrecto, intentelo de nuevo");
                     break;
             }
 
@@ -227,6 +240,7 @@ public class Main {
     }
 
 
+    // IMPRIME POR PANTALLA EL REGISTRO DEL PACIENTE SEGUN EL DNI INTRODUCIDO
     private static void consultarDatos() throws SQLException{
         asignar();
         PreparedStatement ps = conn.prepareStatement("select * from paciente where dni = ?");
@@ -245,22 +259,67 @@ public class Main {
     }
 
 
+    // CONSTRUIMOS UN OBJETO PARA METODO INSERTAR OBJETO
+    private static Paciente construirObjeto() {
+        //generar un objeto de la clase paciente a partir de datos introducidos por teclado
+
+        System.out.println("Introduce el dni");
+        String dni = sc.next();
+        System.out.println("Introduce el nombre");
+        String nombre = sc.next();
+        System.out.println("Introduce el apellido");
+        String apellido = sc.next();
+        System.out.println("Introdudce el n_operaciones");
+        int n_operaciones = sc.nextInt();
+
+        Paciente p = new Paciente(dni, nombre, apellido, n_operaciones);
+
+        return p;
+    }
+
+
+    // METODO PARA INSERTAR REGISTROS DESDE OTRA CLASE
+    private static void insertarObjeto(Paciente p) throws SQLException {
+        asignar();
+
+        PreparedStatement ps = conn.prepareStatement("insert into paciente values (?,?,?,?)");
+        ps.setString(1, Main.p.getDni());
+        ps.setString(2, Main.p.getNombre());
+        ps.setString(3, Main.p.getApellidos());
+        ps.setInt(4, Main.p.getN_operaciones());
+
+        ps.executeUpdate();
+
+        System.out.println("Registro objeto insertado correctamente");
+    }
+
+
+    private static void insertarArray() throws SQLException{
+        asignar();
+
+        PreparedStatement ps = conn.prepareStatement("select * from paciente");
+        ResultSet rs = ps.executeQuery();
+
+        Paciente p = null;
+        while (rs.next()){
+
+            p = new Paciente(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4));
+            listado_pacientes.add(p);
+
+        }
+
+
+
+        for (Paciente e:listado_pacientes){
+            System.out.println(e.toString());
+        }
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
+    }
 
 
 }
