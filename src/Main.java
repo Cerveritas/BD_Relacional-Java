@@ -1,6 +1,5 @@
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class Main {
@@ -31,6 +30,10 @@ public class Main {
             System.out.println("10 - Consultar datos");
             System.out.println("11 - Insertar en BBDD a partir de una clase");
             System.out.println("12 - Almacenar los registros de la BBDD en un arrayList");
+            System.out.println("13 - Ordenar el ArrayList por el numero de operaciones de manera descendence");
+            System.out.println("14 - Ordenar el ArrayList por numero de operacion [descendente] y después por apellido [ascendente]");
+            System.out.println("15 - SHOW DATABASES");
+            System.out.println("16 - SHOW DATABASES 2");
             System.out.println(" ");
             System.out.println("Introzca una opcion por favor");
             System.out.println("------------------------------------------");
@@ -92,14 +95,28 @@ public class Main {
                     insertarArray();
                     break;
 
+                case 13:
+                    ordenar_noperaciones_desc();
+                    break;
+
+                case 14:
+                    ordenar_noperaciones_desc_apellidos_asc();
+                    break;
+
+                case 15:
+                    mostrar_bbdd();
+                    break;
+
+                case 16:
+                    mostrar_bbdd2();
+                    break;
+
                 default:
                     System.out.println("El numero introducido es incorrecto, intentelo de nuevo");
                     break;
             }
 
         } while (opcion != 0);
-
-
     }
 
 
@@ -124,10 +141,6 @@ public class Main {
         st.executeUpdate(query);
         System.out.println("BD creada correctamente");
         asignar();
-
-
-
-
     }
 
     private static void asignar() throws SQLException {
@@ -294,6 +307,7 @@ public class Main {
     }
 
 
+    // METODO PARA ALMACENAR TODA LA INFORMACIÓN DE LA BBDD EN UN ARRAYLIST
     private static void insertarArray() throws SQLException{
         asignar();
 
@@ -307,19 +321,58 @@ public class Main {
             listado_pacientes.add(p);
 
         }
-
-
-
         for (Paciente e:listado_pacientes){
             System.out.println(e.toString());
         }
-
-
-
-
-
-
     }
 
 
+    // MÉTODO PARA ORDENAR AL IMPRIMIR DE MANERA ASCEDENTE EL NUMERO DE OPERACIONES
+    private static void ordenar_noperaciones_desc() throws SQLException {
+        asignar();
+
+        listado_pacientes.sort(Comparator.comparing(Paciente::getN_operaciones).reversed());
+        Iterator<Paciente> itr2 = listado_pacientes.iterator();
+        while (itr2.hasNext()){
+            System.out.println(itr2.next().toString());
+        }
+    }
+
+
+    // MÉTODO PARA ORDENAR AL IMPIRMIR DE MANERA DESCENDENTE EL NUMERO DE OPERACIONES Y DE MANERA ASCENDENTE LOS APELLIDOS
+    private static void ordenar_noperaciones_desc_apellidos_asc() throws SQLException {
+        asignar();
+
+        listado_pacientes.sort(Comparator.comparing(Paciente::getN_operaciones).reversed().thenComparing(Paciente::getApellidos));
+
+        for (int i = 0; i < listado_pacientes.size(); i++) {
+            System.out.println(listado_pacientes.get(i).toString());
+        }
+    }
+
+
+    // MÉTODO PARA VER TODAS LAS BASES DE DATOS DE NUESTRO WORKBENCH
+    private static void mostrar_bbdd() throws SQLException {
+        asignar();
+
+        String query = "SHOW DATABASES";
+        Statement st = conn.createStatement();
+        ResultSet rs = st.executeQuery(query);
+
+        while (rs.next()){
+            System.out.println(rs.getString(1));
+        }
+    }
+
+
+    // OTRO MANERA PARA VER TODAS LAS BASES DE DATOS DE NUESTRO WORKBENCH (HUELE A EXAMEN)
+    private static void mostrar_bbdd2() throws SQLException {
+        asignar();
+
+        DatabaseMetaData databaseMetaData = conn.getMetaData();
+        ResultSet resultados = databaseMetaData.getCatalogs();
+        while (resultados.next()){
+            System.out.println(resultados.getString(1));
+        }
+    }
 }
