@@ -1,12 +1,16 @@
-/*
+
 package EjercicioPractico;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 
 public class Main {
+    public static Jugador[] array_estatico_jugadores;
+    public static ArrayList<Jugador> array_dinamico_jugadores = new ArrayList<>();
+    public static Jugador j = null;
 public static Connection conn;
 
     public static void main(String[] args) throws SQLException {
@@ -28,7 +32,9 @@ public static Connection conn;
             System.out.println("4 - Eliminar tabla");
             System.out.println("5 - Insertar jugador ");
             System.out.println("6 - Buscar jugador por dorsal y almacenamos en un objeto jugador e imprimimos ese objeto");
-            System.out.println("7 - Insertar registros en array eststico");
+            System.out.println("7 - Insertar registros en un array estático");
+            System.out.println("8 - Insertar registros en un array dinámico");
+            System.out.println("9 - Mostrar las tablas de nuestra base de datos");
             System.out.println("Introzca una opcion por favor");
             System.out.println("------------------------------------------");
 
@@ -81,11 +87,21 @@ public static Connection conn;
                     break;
 
                 case 7:
-                    Jugador[] array_estatico_jugadores = almacenar_array_estatico();
+                    array_estatico_jugadores =  almacenar_array_estatico();
+                    System.out.println(array_estatico_jugadores.length);
+                    System.out.println(Arrays.toString(array_estatico_jugadores));
                     break;
 
                 case 8:
-                    ArrayList<Jugador> arrayList0 = almacenar_array_dinamico();
+                    array_dinamico_jugadores = almacenar_array_dinamico();
+                    for (Jugador p : array_dinamico_jugadores
+                         ) {
+                        System.out.println(p.toString());
+                    }
+                    break;
+
+                case 9:
+                    //mostrar_tablaMETADATO();
                     break;
 
                 default:
@@ -139,7 +155,7 @@ public static Connection conn;
     }
 
 
-    // MÉTODO PARA VACIAR LA TBABLA
+    // MÉTODO PARA VACIAR LA TABLA JUGADOR
     private static void vaciar_tabla() throws SQLException {
         String query = "truncate jugador";
         Statement st = conn.createStatement();
@@ -147,7 +163,7 @@ public static Connection conn;
         System.out.println("Tabla jugador vaciada correctamente...");
     }
 
-    // MÉTODO PARA ELIMINAR LA TABLA JUGADORES
+    // MÉTODO PARA ELIMINAR LA TABLA JUGADOR
 
     private static void eliminarTabla() throws SQLException {
         String query = "drop table jugador";
@@ -170,7 +186,10 @@ public static Connection conn;
     }
 
 
+    // MÉTODO PARA BUSCAR JUGADOR POR EL NUMERO DE DORSAL
     private static Jugador buscarPorDorsal(int dorsal) throws SQLException {
+        establecer_conexion();
+        asignar_bd();
 
         Jugador j = null;
         PreparedStatement ps = conn.prepareStatement("select * from jugador where dorsal_camiseta = ?");
@@ -178,23 +197,71 @@ public static Connection conn;
         ResultSet rs = ps.executeQuery();
         while (rs.next()){
            j = new Jugador(rs.getString(1), rs.getString(2), rs.getInt(3), rs.getDouble(4), rs.getInt(5));
-
         }
 
         return j;
     }
 
 
-    private static Jugador[] almacenar_array_estatico() {
+    // MÉTODO PARA ALMACENAR LOS JUGADORES EN UN ARRAY ESTÁTICO
+    private static Jugador[] almacenar_array_estatico() throws SQLException {
+        establecer_conexion();
+        asignar_bd();
+
+        PreparedStatement ps = conn.prepareStatement("select count(*) from jugador");
+        ResultSet rs = ps.executeQuery();
+
+        int dimension = 0;
+
+        while (rs.next()){
+            dimension = rs.getInt(1);
+        }
+
+        array_estatico_jugadores = new Jugador[dimension];
 
 
+        ps = conn.prepareStatement("select * from jugador");
+        rs = ps.executeQuery();
+        int i = 0;
+
+        while (rs.next()){
+            j = new Jugador(rs.getString(1), rs.getString(2), rs.getInt(3), rs.getDouble(4), rs.getInt(5));
+            array_estatico_jugadores[i] = j;
+            i++;
+        }
+        return array_estatico_jugadores;
     }
 
 
+    // MÉTODO PARA ALMACENAR LOS JUGADORES EN UN ARRAY DINÁMICO
+    private static ArrayList<Jugador> almacenar_array_dinamico() throws SQLException {
+        establecer_conexion();
+        asignar_bd();
 
+        PreparedStatement ps = conn.prepareStatement("select * from jugador");
+        ResultSet rs = ps.executeQuery();
 
+        while (rs.next()) {
+            j = new Jugador(rs.getString(1), rs.getString(2), rs.getInt(3), rs.getDouble(4), rs.getInt(5));
+            array_dinamico_jugadores.add(j);
+        }
+        return  array_dinamico_jugadores;
+    }
 
+/*
+    private static void mostrar_tablaMETADATO() throws SQLException {
+        establecer_conexion();
+        asignar_bd();
 
+        DatabaseMetaData databaseMetaData = conn.getMetaData();
+        ResultSet resultados =  databaseMetaData.getTables();
+
+        while (resultados.next()){
+            System.out.println(resultados.getString(1));
+        }
+    }
+
+*/
 
 
 
@@ -209,5 +276,3 @@ public static Connection conn;
     }
 
 }
-
-*/
