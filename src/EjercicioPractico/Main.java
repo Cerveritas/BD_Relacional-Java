@@ -1,6 +1,11 @@
 
 package EjercicioPractico;
 
+import com.mysql.cj.xdevapi.DatabaseObject;
+import com.mysql.cj.xdevapi.Table;
+
+import javax.swing.event.TableColumnModelListener;
+import javax.swing.text.TabableView;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -119,7 +124,7 @@ public static Connection conn;
 
         String url="jdbc:mysql://localhost:3306/";
         String user= "root";
-        String pwd="admin";
+        String pwd="Myandroidop5";
         conn= DriverManager.getConnection(url,user,pwd);
     }
 
@@ -248,20 +253,20 @@ public static Connection conn;
         return  array_dinamico_jugadores;
     }
 
-/*
+
     private static void mostrar_tablaMETADATO() throws SQLException {
         establecer_conexion();
         asignar_bd();
 
         DatabaseMetaData databaseMetaData = conn.getMetaData();
-        ResultSet resultados =  databaseMetaData.getTables();
+        ResultSet resultados =  databaseMetaData.getTables(null, null, null, new String[] {"show tables"});
 
         while (resultados.next()){
             System.out.println(resultados.getString(1));
         }
     }
 
-*/
+
 
 
 
