@@ -19,7 +19,7 @@ public class main {
     public static Connection conn = null;
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
 
         int opcion = 0;
 
