@@ -106,7 +106,7 @@ public static Connection conn;
                     break;
 
                 case 9:
-                    //mostrar_tablaMETADATO();
+                    mostrar_tablaMETADATO();
                     break;
 
                 default:
@@ -124,7 +124,7 @@ public static Connection conn;
 
         String url="jdbc:mysql://localhost:3306/";
         String user= "root";
-        String pwd="Myandroidop5";
+        String pwd="admin";
         conn= DriverManager.getConnection(url,user,pwd);
     }
 
@@ -254,17 +254,35 @@ public static Connection conn;
     }
 
 
+    // MÉTODO PARA MOSTRAR LAS TABLAS DE LA BASE DE DATOS Y LA URL
     private static void mostrar_tablaMETADATO() throws SQLException {
         establecer_conexion();
         asignar_bd();
 
         DatabaseMetaData databaseMetaData = conn.getMetaData();
-        ResultSet resultados =  databaseMetaData.getTables(null, null, null, new String[] {"show tables"});
+        ResultSet resultados =  databaseMetaData.getTables("ejerciciopracticojugadores", "ejerciciopracticojugadores", null, null);
 
         while (resultados.next()){
-            System.out.println(resultados.getString(1));
+            System.out.println(resultados.getString(3));
         }
+
+        System.out.println("-------------------------");
+        System.out.println(databaseMetaData.getURL());
+        System.out.println("-------------------------");
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
