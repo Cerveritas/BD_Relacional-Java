@@ -32,8 +32,6 @@ public class main {
             System.out.println("6 - Sacar la version del SGBD");
             System.out.println("Introzca una opcion por favor");
             System.out.println("------------------------------------------");
-
-
             opcion = sc.nextInt();
 
             switch (opcion) {
