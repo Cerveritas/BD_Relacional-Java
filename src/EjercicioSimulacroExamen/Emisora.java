@@ -51,6 +51,10 @@ public abstract class Emisora {
         return beneficios;
     }
 
+    public int getNum_oyentes() {
+        return num_oyentes;
+    }
+
     //setters
 
 

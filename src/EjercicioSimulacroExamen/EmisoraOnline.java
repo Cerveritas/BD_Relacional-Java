@@ -6,7 +6,7 @@ public class EmisoraOnline extends Emisora {
     private String url;
 
 
-    public EmisoraOnline(int num_emisora, String nombre_emisora, int num_oyentes, String url) {
+    public EmisoraOnline(int num_emisora, String nombre_emisora, int num_oyentes, String url) throws AccionInvalida {
         super(num_emisora, nombre_emisora, num_oyentes);
         this.url = url;
     }
