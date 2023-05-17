@@ -12,7 +12,7 @@ public class main {
 
     public static Scanner sc = new Scanner(System.in);
     public static Emisora[] listado_emisoras;
-    public static ArrayList<Emisora> arrayList_emisoras = new ArrayList<>();
+    public static ArrayList<EmisoraOnline> arrayList_emisoras = new ArrayList<>();
     public static Connection conn = null;
 
 
@@ -49,7 +49,7 @@ public class main {
 
                 case 3:
                     //crear un objeto de la clase emisora
-                    EmisoraOnline e = new EmisoraOnline(1, "los 40", 1000, "www.los40.com");
+                    EmisoraOnline e = new EmisoraOnline(1, "los 40", 5000000, "www.los40.com");
                     insertar_emisora(e);
                     break;
 
@@ -67,6 +67,8 @@ public class main {
                     String versionSGBD = sacar_version_SGBD();
                     System.out.println("La version SGBD es" +versionSGBD);
                     break;
+
+
 
 
                 default:
@@ -149,11 +151,7 @@ public class main {
         for (int j = 0; j < listado_emisoras.length; j++){
             System.out.println(listado_emisoras[j].toString());
         }
-
-
-
     }
-
 
 
 
@@ -170,6 +168,9 @@ public class main {
                 arrayList_emisoras.add(e);
             }
         }
+        for (EmisoraOnline e: arrayList_emisoras) {
+            System.out.println(e.toString());
+        }
     }
 
 
@@ -179,6 +180,12 @@ public class main {
         DatabaseMetaData databaseMetaData = conn.getMetaData();
         return  databaseMetaData.getDatabaseProductVersion();
     }
+
+
+
+
+
+
 
 
 
