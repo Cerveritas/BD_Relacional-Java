@@ -29,6 +29,7 @@ public class mainEmisoraTradicional {
             System.out.println("1 - Crear Base De Datos SimulacroExamen");
             System.out.println("2 - Crear tabla emisoraOnline");
             System.out.println("Introzca una opcion por favor");
+            System.out.println("Prueba para crear tabla");
             System.out.println("------------------------------------------");
             opcion = sc.nextInt();
 
@@ -45,6 +46,9 @@ public class mainEmisoraTradicional {
                     insertar_array_estatico();
                     break;
 
+                case 3:
+                    pruebaParaCrearTabla();
+                    break;
 
 
                 default:
@@ -116,6 +120,7 @@ public class mainEmisoraTradicional {
         for (int i = 0; i < array_estatico.length; i++){
 
             PreparedStatement ps = conn.prepareStatement("insert into emisoraTradicional values (?,?,?,?,?,?,?)");
+
             ps.setInt(1, array_estatico[i].getNum_emisora());
             ps.setString(2, array_estatico[i].getNombre_emisora());
             ps.setBoolean(3, array_estatico[i].isEmitiendo());
@@ -123,6 +128,28 @@ public class mainEmisoraTradicional {
             ps.setInt(5, array_estatico[i].getNum_oyentes());
             ps.setString(4, array_estatico[i].getFrecuencia().toString());
             ps.setDouble(5, array_estatico[i].getNum_frecuencia());
+
+            ps.executeUpdate();
         }
+    }
+
+
+    // METODO PARA PRUEBA DE CREAR TABLA
+    private static void pruebaParaCrearTabla() throws SQLException {
+
+        String query = "create table emisoraTradicional (" +
+                "num_emisora int not null primary key," +
+                "nombre varchar(100) not null," +
+                "emitiendo boolean," +
+                "beneficios double," +
+                "num_oyentes int," +
+                "frecuencia(2)" +
+                "num_frecuencia double" +
+                ") ";
+
+        Statement st = conn.createStatement();
+        st.executeUpdate(query);
+        System.out.println("tabla de prueba creada correctamente");
+
     }
 }
