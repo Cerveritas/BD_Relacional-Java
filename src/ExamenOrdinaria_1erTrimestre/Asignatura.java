@@ -14,6 +14,8 @@ public class Asignatura {
         this.nota_practica = nota_practica;
     }
 
+
+
     public int getId() {
         return id;
     }

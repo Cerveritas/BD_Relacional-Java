@@ -1,5 +1,7 @@
 package ExamenOrdinaria_1erTrimestre;
 
+import com.sun.source.doctree.SinceTree;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -34,6 +36,7 @@ public class main2 {
                     "3. - Entornos de Desarrollo");
             System.out.println("4 - Nota media de todas las asignaturas");
             System.out.println("5 - Crear BBDD notas");
+            System.out.println("6 - Insertar Array en BBDD");
             System.out.println(" ");
             System.out.println("Introduzca una opcion");
             System.out.println("----------------------------------------------");
@@ -68,6 +71,12 @@ public class main2 {
 
                 case 5:
                     setup_bd();
+                    break;
+
+                case 6:
+                    insertar_array_en_bd();
+                    break;
+
 
                 default:
                     System.out.println("Introduzca una opcion valida");
@@ -159,6 +168,19 @@ public class main2 {
 
         Statement st = conn.createStatement();
         st.executeUpdate(query);
+    }
+
+    public static void insertar_array_en_bd() throws SQLException {
+        establecerConexion();
+
+        for (int i = 0; i < notas.length; i++){
+            for (int j = 0; j < notas[i].length; j++){
+                Asignatura as =
+            }
+        }
+
+
+
     }
 }
 
