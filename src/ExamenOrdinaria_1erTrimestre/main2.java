@@ -1,3 +1,4 @@
+/*
 package ExamenOrdinaria_1erTrimestre;
 
 import com.sun.source.doctree.SinceTree;
@@ -124,7 +125,7 @@ public class main2 {
                     //switch case;
                 }
             }
-*/
+
     }
 
     public static void notaMediaPorAsignatura(int i) {
@@ -182,5 +183,8 @@ public class main2 {
 
 
     }
+
+
 }
 
+*/
