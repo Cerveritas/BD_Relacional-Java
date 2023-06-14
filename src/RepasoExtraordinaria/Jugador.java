@@ -14,6 +14,7 @@ public class Jugador extends Seleccionado  {
         super(id, nombre, apellidos, edad, anyo_experiencia);
         this.lesionado = false;
         this.posi = posi;
+        this.salario = calcular_salario();
     }
 
 
@@ -21,7 +22,9 @@ public class Jugador extends Seleccionado  {
     //método lesionarse()
     public void lesionarse(){
 
-
+        if (lesionado == false) {
+            lesionado = true;
+        }
 
     }
     //método jugarPartido()
@@ -35,28 +38,17 @@ public class Jugador extends Seleccionado  {
 
 
     public double calcular_salario() {
-        double salario=0;
-
-        switch (posi) {
-            case DEFENSA:
-                salario = 100000 + anyo_experiencia * 1000;
-                break;
-
-            case PORTERO:
-                salario = 200000 + anyo_experiencia * 2000;
-                break;
-
-            case DELANTERO:
-                salario = 300000 + anyo_experiencia * 500;
-                break;
-
-            case CENTROCAMPISTA:
-                salario = 150000 + anyo_experiencia * 800;
-                break;
-
-            default:
-                System.out.println("La posicion introducida es incorrecta");
+        double salario = 0;
+        if(this.getPosi()!= null){
+            switch (this.posi) {
+                case DEFENSA -> salario = 100000 + anyo_experiencia * 1000;
+                case PORTERO -> salario = 200000 + anyo_experiencia * 2000;
+                case DELANTERO -> salario = 300000 + anyo_experiencia * 500;
+                case CENTROCAMPISTA -> salario = 150000 + anyo_experiencia * 800;
+                default -> System.out.println("La posicion introducida es incorrecta");
+            }
         }
+
 
         return salario;
 

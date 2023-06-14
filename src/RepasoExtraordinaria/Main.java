@@ -66,10 +66,11 @@ public class Main {
                     System.out.println("Introduzca los años de experiencia");
                         int anyo_experiencia = sc.nextInt();
                     System.out.println("Introduza la posicion del jugador [ PORTERO, DEFENSA, CENTROCAMPISTA, DELANTERO ]");
-                       Posicion posicion = Posicion.valueOf(sc.next());
+                       //Posicion posicion = Posicion.valueOf(sc.next());
+                    String pos = sc.next().toUpperCase();
 
 
-                    Jugador j2 = new Jugador(id, nombre, apellido, edad, anyo_experiencia, posicion);
+                    Jugador j2 = new Jugador(id, nombre, apellido, edad, anyo_experiencia, Posicion.valueOf(pos));
                     insertarRegistro(j2);
                     break;
 
@@ -102,7 +103,7 @@ public class Main {
 
         String url="jdbc:mysql://localhost:3306/";
         String user= "root";
-        String pwd="Myandroidop5";
+        String pwd="admin";
         conn= DriverManager.getConnection(url,user,pwd);
         System.out.println("Conexión establecida...");
     }
@@ -149,6 +150,8 @@ public class Main {
         ps.setString(3, j.getApellidos());
         ps.setInt(4, j.getEdad());
         ps.setInt(5, j.getAnyo_experiencia());
+        ps.setDouble(6, j.getSalario());
+        ps.setBoolean(7, j.isLesionado());
         ps.setString(8, String.valueOf(j.getPosi()));
 
         ps.executeUpdate();

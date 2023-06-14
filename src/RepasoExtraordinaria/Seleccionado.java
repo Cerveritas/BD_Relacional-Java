@@ -29,7 +29,6 @@ public abstract class Seleccionado {
             throw new AccionIncorrecta("la edad o experiencia no puede ser menor a 0");
         }
             this.anyo_experiencia = anyo_experiencia;
-            this.salario = calcular_salario();
     }
 
     //método calcular_salario implementado por hija
