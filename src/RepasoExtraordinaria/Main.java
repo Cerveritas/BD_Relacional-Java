@@ -1,11 +1,9 @@
 package RepasoExtraordinaria;
-import java.awt.*;
-import java.nio.file.FileSystemNotFoundException;
+
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Enumeration;
 import java.util.Scanner;
+
 
 public class Main {
 
@@ -69,25 +67,39 @@ public class Main {
                        //Posicion posicion = Posicion.valueOf(sc.next());
                     String pos = sc.next().toUpperCase();
 
-
                     Jugador j2 = new Jugador(id, nombre, apellido, edad, anyo_experiencia, Posicion.valueOf(pos));
                     insertarRegistro(j2);
                     break;
 
                 case 5:
-
+                    System.out.print("Introduce el ID del jugador a consultar: ");
+                    int identificador = sc.nextInt();
+                    j1 = consultarJugador(identificador);
+                    System.out.println(j1.toString());
                     break;
 
                 case 6:
+                    System.out.print("¿Cual es la posicion de los jugagores que desea almacenar en arrayList?: ");
+                    String posicion = sc.next().toUpperCase();
+                    insertar_arraylist(posicion);
                     break;
 
                 case 7:
+                    ordenar_arraylist();
                     break;
 
                 case 8:
+                    System.out.print("Indique el numero de jugadores a insertar: ");
+                    int dimension = sc.nextInt();
+
+                    Jugador[] listaJugador = new Jugador[dimension];
+
+
+                    insertar_arrayestatico(listaJugador);
                     break;
 
                 case 9:
+                    mostrar_metadatos();
                     break;
 
                 default:
@@ -103,7 +115,7 @@ public class Main {
 
         String url="jdbc:mysql://localhost:3306/";
         String user= "root";
-        String pwd="admin";
+        String pwd="Myandroidop5";
         conn= DriverManager.getConnection(url,user,pwd);
         System.out.println("Conexión establecida...");
     }
@@ -164,27 +176,120 @@ public class Main {
 
     public static Jugador consultarJugador(int id) throws SQLException, AccionIncorrecta {
 
+        PreparedStatement ps = conn.prepareStatement("SELECT * FROM jugador WHERE id = ?");
+        ps.setInt(1, id);
+
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+
+
+
+       j1 = new Jugador(rs.getInt(1) , rs.getString(2) , rs.getString(3), rs.getInt(4) , rs.getInt(5), Posicion.valueOf(rs.getString(8)));
+
+        }
+
         return j1;
     }
 
 
     public static void insertar_arraylist(String posicion) throws SQLException, AccionIncorrecta {
+        PreparedStatement ps = conn.prepareStatement("SELECT * FROM jugador WHERE id = ?");
+        ps.setString(1, posicion);
 
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+
+            j1 = new Jugador(rs.getInt(1) , rs.getString(2) , rs.getString(3), rs.getInt(4) , rs.getInt(5), Posicion.valueOf(rs.getString(8)));
+            lista_futbolistas.add(j1);
+            }
+
+        for (int i = 0; i < lista_futbolistas.size(); i++) {
+            System.out.println(lista_futbolistas.get(i));
+        }
+
+        for (Jugador j1 : lista_futbolistas){
+            System.out.println(j1.toString());
+        }
+
+
+
+
+
+
+
+
+        // TERMINAR ESTE EJERCICIO NO ME SALE CORRECTAMENTE
     }
 
     public static void ordenar_arraylist() throws SQLException, AccionIncorrecta {
-
+        // sino me sale el anterior este no me va a salir
     }
 
-    public static void insertar_arrayestatico(Jugador[] lista) throws SQLException {
+    public static void insertar_arrayestatico(Jugador[] lista) throws SQLException, AccionIncorrecta {
 
 
+        for (int i = 0; i < lista.length; i++) {
+            System.out.println("Indique el id del jugador");
+            int id = sc.nextInt();
+            System.out.println("Indique el nombre del jugador");
+            String nombre = sc.next();
+            System.out.println("Indique el apellido del jugador");
+            String apellido = sc.next();
+            System.out.println("Indique la edad del jugador");
+            int edad = sc.nextInt();
+            System.out.println("Indique los años de experiencia del jugador");
+            int anyo_experiencia = sc.nextInt();
+            System.out.println("Indique la posicion del jugador");
+            String posicion = sc.next();
+
+            lista[i] = new Jugador(id, nombre, apellido, edad, anyo_experiencia, Posicion.valueOf(posicion));
+        }
+
+        PreparedStatement ps = conn.prepareStatement("INSERT INTO jugador VALUES (?,?,?,?,?,?,?,?)");
+
+        for (int i = 0; i < lista.length; i++){
+            ps.setInt(1, lista[i].getId());
+            ps.setString(2, lista[i].getNombre());
+            ps.setString(3, lista[i].getApellidos());
+            ps.setInt(4, lista[i].getEdad());
+            ps.setInt(5, lista[i].getAnyo_experiencia());
+            ps.setDouble(6, lista[i].getSalario());
+            ps.setBoolean(7, lista[i].isLesionado());
+            ps.setString(8, String.valueOf(lista[i].getPosi()));
+
+            ps.executeUpdate();
+
+            System.out.println("Registro insertado correctamente");
+        }
     }
 
 
 
     public static String mostrar_metadatos() throws SQLException {
         String cadena = null;
+
+
+        DatabaseMetaData databaseMetaData = conn.getMetaData();
+        ResultSet resultados =  databaseMetaData.getTables("examen_ordinaria", "examen_ordinaria", null, null);
+
+        while (resultados.next()){
+            System.out.println(resultados.getString(3));
+        }
+
+        System.out.println("-------------------------");
+        System.out.println("URL: "+databaseMetaData.getURL());
+        System.out.println("SGBD: "+databaseMetaData.getDatabaseProductVersion());
+        System.out.println("-------------------------");
+
+
+
+
+
+
+
+
+
 
         return cadena;
     }
