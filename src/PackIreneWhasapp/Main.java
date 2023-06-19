@@ -4,12 +4,16 @@ import ExamenTercerTrimestre.Hotel;
 import RepasoExtraordinaria.Jugador;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
     static Scanner sc = new Scanner(System.in);
     public static Connection conn;
     public static Profesor p2;
+    public static ArrayList<Profesor> lista_profesores = new ArrayList<>();
+
+    public static Profesor[] lista_profesores_estatica;
 
     public static void main(String[] args) throws SQLException, AccionIncorrecta {
 
@@ -26,12 +30,9 @@ public class Main {
             System.out.println("3 - Crear la tabla profesor");
             System.out.println("4 - Insertar registro a partir de un objeto de la clase profesor que se ha valorizado por los valores introducidos por teclado");
             System.out.println("5 - Consultar profesor por id intoducido por teclado y almacenarlo en un objeto de la clase profesor. Mostrar info");
-            System.out.println("6 - Insertar todos los registros de la tabla profesor que tengan un salario mayor al indicado por parametria de entrada en un arraylist global llamado lista_profesores. Mostrar arrayList");
-            System.out.println("7 - Ordenar arraylist lista_profesores de la opcion 6 primero por años de experiencia de manera ascendente y, luego, por salario de manera descendente. Mostrar arrayList ordenado");
-            System.out.println("8 - Crear arraylist profesores_bd a partir de los datos que ya hay almacenados en la bd");
-            System.out.println("9 - Insertar en bd un array estatico de profesores creado previamente. Primero preguntamos al usuario la dimension");
-            System.out.println("10 - Comparar el contenido de lista_profesores y profesores_bd e imprimir 'todo correcto' si ambos poseen el mismo contenido");
-            System.out.println("11 - Mostrar la url de la conexion y la version del SGBD con el siguiente formato...");
+            System.out.println("6 - Insertar profesores de la bd en un arraylist, se mostrara por pantalla");
+            System.out.println("7 - Insertar en bd un array estatico de profesores, se solicitara al usuario la dimension");
+            System.out.println("8 - Insertar en un array estaico los datos de la base de datos. Mostrar info");
             System.out.println(" ");
             System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
             System.out.println("Indique una opcion");
@@ -58,16 +59,16 @@ public class Main {
                     break;
 
                 case 4:
-                    System.out.println("introduzca el grado");
-                        String grado = sc.next();
+                    System.out.println("introduzca el grado [ BASICO, MEDIO, SUPERIOR ]");
+                        String grado = sc.next().toUpperCase();
                     System.out.println("Introduzca el ies");
                         String ies = sc.next();
                     System.out.println("Introduzca si esta activo o no");
                         boolean activo = sc.nextBoolean();
-                    System.out.println("Introduzca la categoria");
-                        String categoria = sc.next();
-                    System.out.println("Introduzca el nivel");
-                        String nivel = sc.next();
+                    System.out.println("Introduzca la categoria [ A, B, C ]");
+                        String categoria = sc.next().toUpperCase();
+                    System.out.println("Introduzca el nivel [ UNO, DOS, TRES ]");
+                        String nivel = sc.next().toUpperCase();
                     System.out.println("Introduzca el id");
                         int id = sc.nextInt();
                     System.out.println("introduzca los años de experiencia");
@@ -89,21 +90,17 @@ public class Main {
                     break;
 
                 case 6:
+                    insertarEnArrayList();
                     break;
 
                 case 7:
+                    System.out.println("Introduzca la cantidad de profesores que desea meter en la bd");
+                        int dimen = sc.nextInt();
+                    insertarArrayEstatico(dimen);
                     break;
 
                 case 8:
-                    break;
-
-                case 9:
-                    break;
-
-                case 10:
-                    break;
-
-                case 11:
+                    insertarBBDDenArrayEstatico();
                     break;
 
                 default:
@@ -116,7 +113,7 @@ public class Main {
     public static void conectarBD() throws SQLException {
         String url="jdbc:mysql://localhost:3306/";
         String user= "root";
-        String pwd="admin";
+        String pwd="Myandroidop5";
         conn= DriverManager.getConnection(url,user,pwd);
         System.out.println("Conexión establecida...");
     }
@@ -191,6 +188,124 @@ public class Main {
         return p2;
     }
 
+    public static void insertarEnArrayList() throws SQLException, AccionIncorrecta {
+
+        PreparedStatement ps = conn.prepareStatement("SELECT * from profesor");
+        ResultSet rs = ps.executeQuery();
+
+        while(rs.next()) {
+
+            p2 = new Profesor(rs.getInt(7), Categoria.valueOf(rs.getString(5)), Nivel.valueOf(rs.getString(6)), rs.getInt(8), rs.getString(9), rs.getString(2), rs.getBoolean(3), Grado.valueOf(rs.getString(1)));
+
+
+            lista_profesores.add(p2);
+
+        }
+
+        imprimirArrayList();
+
+    }
+
+    public static void insertarArrayEstatico(int dimension) throws AccionIncorrecta, SQLException {
+
+        Profesor[] estatico = new Profesor[dimension];
+
+        for (int i = 0; i < estatico.length; i++) {
+
+            System.out.println("introduzca el grado [ BASICO, MEDIO, SUPERIOR ]");
+            String grado = sc.next().toUpperCase();
+            System.out.println("Introduzca el ies");
+            String ies = sc.next();
+            System.out.println("Introduzca si esta activo o no");
+            boolean activo = sc.nextBoolean();
+            System.out.println("Introduzca la categoria [ A, B, C ]");
+            String categoria = sc.next().toUpperCase();
+            System.out.println("Introduzca el nivel [ UNO, DOS, TRES ]");
+            String nivel = sc.next().toUpperCase();
+            System.out.println("Introduzca el id");
+            int id = sc.nextInt();
+            System.out.println("introduzca los años de experiencia");
+            int anyosExperiencia = sc.nextInt();
+            System.out.println("Introduzca la fecha de contrato");
+            String fecha_contrato = sc.next();
+
+            Profesor p = new Profesor(id, Categoria.valueOf(categoria), Nivel.valueOf(nivel), anyosExperiencia, fecha_contrato, ies, activo, Grado.valueOf(grado));
+
+            estatico[i] = p;
+        }
+
+        for (int i = 0; i < estatico.length; i++){
+
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO profesor VALUES (?,?,?,?,?,?,?,?,?)");
+
+            ps.setString(1, String.valueOf(estatico[i].getGrado()));
+            ps.setString(2, estatico[i].getIES());
+            ps.setBoolean(3, estatico[i].isActivo());
+            ps.setDouble(4, estatico[i].getSalario());
+            ps.setString(5, String.valueOf(estatico[i].getCategoria()));
+            ps.setString(6, String.valueOf(estatico[i].getNivel()));
+            ps.setInt(7, estatico[i].getId());
+            ps.setInt(8, estatico[i].getAnyo_experiencia());
+            ps.setString(9, estatico[i].getFecha_contrato());
+
+            ps.executeUpdate();
+
+            System.out.println("Datos introducidos en la base de datos correctamente");
+        }
+    }
+
+    public static void insertarBBDDenArrayEstatico() throws SQLException, AccionIncorrecta {
+
+        PreparedStatement ps = conn.prepareStatement("SELECT COUNT(*) FROM profesor ");
+        ResultSet rs = ps.executeQuery();
+
+        int dimension = 0;
+        while (rs.next()) {
+            dimension = rs.getInt(1);
+        }
+
+        lista_profesores_estatica = new Profesor[dimension];
+
+        ps = conn.prepareStatement("SELECT * FROM profesor ");
+        rs = ps.executeQuery();
+
+        int i = 0;
+        while (rs.next()){
+
+            p2 = new Profesor(rs.getInt(7), Categoria.valueOf(rs.getString(5)), Nivel.valueOf(rs.getString(6)), rs.getInt(8), rs.getString(9), rs.getString(2), rs.getBoolean(3), Grado.valueOf(rs.getString(1)));
+
+
+            lista_profesores_estatica[i] = p2;
+            i++;
+
+            for (int j = 0; j < lista_profesores_estatica.length; j++){
+                System.out.println(lista_profesores_estatica[j]);
+            }
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+    }
+
+
+
+
+    public static void imprimirArrayList(){
+
+        for (Profesor pro : lista_profesores){
+            System.out.println(pro.toString());
+        }
+
+    }
 
 
 
