@@ -283,18 +283,9 @@ public class Main {
             }
 
         }
-
-
-
-
-
-
-
-
-
-
-
     }
+
+
 
 
 
@@ -304,7 +295,6 @@ public class Main {
         for (Profesor pro : lista_profesores){
             System.out.println(pro.toString());
         }
-
     }
 
 
