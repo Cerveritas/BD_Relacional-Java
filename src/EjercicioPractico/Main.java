@@ -1,8 +1,7 @@
 
 package EjercicioPractico;
 
-import com.mysql.cj.xdevapi.DatabaseObject;
-import com.mysql.cj.xdevapi.Table;
+
 
 import javax.swing.event.TableColumnModelListener;
 import javax.swing.text.TabableView;
